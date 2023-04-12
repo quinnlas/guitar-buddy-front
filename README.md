@@ -1,6 +1,6 @@
 # guitar-buddy-front
 
-The front end of Guitar Buddy, a web app that analyzes text tabs. The tool will read the text tab and interpret the rhythm and notes in the tab. Then it can use that to create a tab file, suggest an alternative tab, and more.
+The front end of Guitar Buddy, a web app that analyzes text tabs. The tool will read the text tab and interpret the rhythm and notes in the tab. Then it can use that to create a tab file, suggest an alternative tab, and more. Currently, it just gives the option to play the tab back through your browser.
 
 ## Project Setup
 

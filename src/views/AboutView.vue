@@ -1,7 +1,8 @@
 <template>
   <div class="about">
-    <!-- TODO -->
-    <h1>This is an about page</h1>
+    <h1>About</h1>
+    <p>This is the Guitar Buddy project. See here for details:</p>
+    <el-link href="https://github.com/quinnlas/guitar-buddy-front#readme" target="_blank">Github</el-link>
   </div>
 </template>
 
