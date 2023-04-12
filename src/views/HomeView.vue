@@ -78,7 +78,6 @@ const tunings = {
 export default {
   data() {
     return {
-      // TODO buttons or dropdown for example tabs
       tabForm: {
         tab: '',
         tuning: 'standard'
@@ -122,7 +121,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         }
-      }) // TODO api error handling
+      })
       this.song = wsRes.data
     },
     async play() {
