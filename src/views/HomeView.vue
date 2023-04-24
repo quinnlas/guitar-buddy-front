@@ -1,3 +1,7 @@
+<script setup>
+import OptimizeForm from '../components/OptimizeForm.vue'
+</script>
+
 <template>
   <main>
     <!-- TODO components? -->
@@ -36,30 +40,35 @@
         <el-button type="primary" @click="submit">Submit</el-button>
       </el-form-item>
     </el-form>
-    <el-form v-else>
-      <p>Tab parsed!</p>
-      <el-form-item label="Measure Time">
-        <el-tooltip content="The number of seconds one measure of the song should last. Usually 240/BPM.">
-          <el-input type="number" v-model="playbackForm.measureTime"></el-input>
-        </el-tooltip>
-      </el-form-item>
-      <el-form-item label="Wave Type">
-        <el-tooltip :content="'The \'timbre\' of the sound of each note'">
-          <el-select v-model="playbackForm.waveType">
-          <el-option
-            v-for="item in waveOptions"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-        </el-tooltip>
-      </el-form-item>
-      <el-form-item>
-        <!-- TODO stop button etc -->
-        <el-button type="primary" @click="play">Play</el-button>
-      </el-form-item>
-    </el-form>
+    <template v-else>
+      <el-form>
+        <p>Tab parsed!</p>
+        <h2>Playback</h2>
+        <el-form-item label="Measure Time">
+          <el-tooltip
+            content="The number of seconds one measure of the song should last. Usually 240/BPM."
+          >
+            <el-input type="number" v-model="playbackForm.measureTime"></el-input>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item label="Wave Type">
+          <el-tooltip :content="'The \'timbre\' of the sound of each note'">
+            <el-select v-model="playbackForm.waveType">
+              <el-option
+                v-for="item in waveOptions"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="play">Play</el-button>
+        </el-form-item>
+      </el-form>
+      <optimize-form :tuning="tuningObject" :song="song"/>
+    </template>
   </main>
 </template>
 
@@ -110,12 +119,15 @@ export default {
   computed: {
     exampleNames() {
       return Object.keys(examples)
+    },
+    tuningObject() {
+      return tunings[this.tabForm.tuning]
     }
   },
   methods: {
     async submit() {
       const submitForm = Object.assign({}, this.tabForm, {
-        tuning: tunings[this.tabForm.tuning]
+        tuning: this.tuningObject
       })
       const wsRes = await api.post('/tab/parse', submitForm, {
         headers: {
