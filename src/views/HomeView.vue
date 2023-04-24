@@ -3,7 +3,14 @@
     <!-- TODO components? -->
     <h1>Welcome to Guitar Buddy</h1>
     <el-form v-if="!song" label-position="top">
-      <p>Examples <el-link href="https://www.ultimate-guitar.com/top/tabs?order=hitstotal_desc&type=tab" target="_blank">(find more here)</el-link>:</p>
+      <p>
+        Examples
+        <el-link
+          href="https://www.ultimate-guitar.com/top/tabs?order=hitstotal_desc&type=tab"
+          target="_blank"
+          >(find more here)</el-link
+        >:
+      </p>
       <el-button
         v-for="name of exampleNames"
         :key="name"
@@ -12,7 +19,7 @@
       >
         {{ name }}
       </el-button>
-      <br><br>
+      <br /><br />
       <el-form-item label="Please enter your tab to start:">
         <el-input
           style="font-family: monospace"
@@ -32,6 +39,20 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="Beats Per Measure">
+        <el-tooltip
+          content="Usually 4. The top number of the time signature."
+        >
+          <el-input type="number" v-model="tabForm.beatsPerMeasure"></el-input>
+        </el-tooltip>
+      </el-form-item>
+      <el-form-item label="Beat Fractions Allowed">
+        <el-tooltip
+          content="Comma separated. The fractions of a beat that are allowed. For example, a fraction of 2 with 4 beats per measure means eighth notes."
+        >
+          <el-input v-model="tabForm.allowedPartials"></el-input>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submit">Submit</el-button>
       </el-form-item>
@@ -39,20 +60,22 @@
     <el-form v-else>
       <p>Tab parsed!</p>
       <el-form-item label="Measure Time">
-        <el-tooltip content="The number of seconds one measure of the song should last. Usually 240/BPM.">
+        <el-tooltip
+          content="The number of seconds one measure of the song should last. Usually 240/BPM."
+        >
           <el-input type="number" v-model="playbackForm.measureTime"></el-input>
         </el-tooltip>
       </el-form-item>
       <el-form-item label="Wave Type">
         <el-tooltip :content="'The \'timbre\' of the sound of each note'">
           <el-select v-model="playbackForm.waveType">
-          <el-option
-            v-for="item in waveOptions"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
+            <el-option
+              v-for="item in waveOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
         </el-tooltip>
       </el-form-item>
       <el-form-item>
@@ -67,7 +90,6 @@
 import api from '../tools/api'
 import { playSong } from '../tools/audio'
 import examples from '../tools/examples'
-// import audio from '../tools/audio'
 
 // el-select does not work well with array values
 const tunings = {
@@ -80,7 +102,9 @@ export default {
     return {
       tabForm: {
         tab: '',
-        tuning: 'standard'
+        tuning: 'standard',
+        beatsPerMeasure: 4,
+        allowedPartials: '4, 6'
       },
       playbackForm: {
         measureTime: 2,
@@ -99,12 +123,7 @@ export default {
         }
         // TODO custom
       ],
-      waveOptions: [
-        'sine',
-        'sawtooth',
-        'square',
-        'triangle'
-      ]
+      waveOptions: ['sine', 'sawtooth', 'square', 'triangle']
     }
   },
   computed: {
@@ -115,7 +134,8 @@ export default {
   methods: {
     async submit() {
       const submitForm = Object.assign({}, this.tabForm, {
-        tuning: tunings[this.tabForm.tuning]
+        tuning: tunings[this.tabForm.tuning],
+        allowedPartials: this.tabForm.allowedPartials.split(',').map(s => parseInt(s.trim()))
       })
       const wsRes = await api.post('/tab/parse', submitForm, {
         headers: {
