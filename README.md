@@ -5,6 +5,9 @@ The front end of Guitar Buddy, a web app that analyzes text tabs. The tool will 
 See a demo here:
 https://www.youtube.com/watch?v=IwBbrkSDDko
 
+Backend:
+https://github.com/quinnlas/guitar-buddy-back
+
 ## Project Setup
 
 ```sh
